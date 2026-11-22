@@ -1,0 +1,13 @@
+{
+ "west": -1.4,
+ "south": 44.45,
+ "east": -0.95,
+ "north": 44.8,
+ "width": 864,
+ "height": 672,
+ "unit": "cm",
+ "datum": "LAT / zéro hydrographique (approx.)",
+ "min_m": -47.32622528076172,
+ "max_m": 96.3057632446289,
+ "source": "EMODnet Bathymetry DTM (mean) — https://emodnet.ec.europa.eu/en/bathymetry"
+}

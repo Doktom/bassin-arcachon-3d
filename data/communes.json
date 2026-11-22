@@ -1,0 +1,12 @@
+[
+  {"name": "Arcachon", "lon": -1.1680, "lat": 44.6589, "epci": "COBAS"},
+  {"name": "La Teste-de-Buch", "lon": -1.1440, "lat": 44.6300, "epci": "COBAS"},
+  {"name": "Gujan-Mestras", "lon": -1.0670, "lat": 44.6360, "epci": "COBAS"},
+  {"name": "Le Teich", "lon": -1.0240, "lat": 44.6330, "epci": "COBAS"},
+  {"name": "Biganos", "lon": -0.9770, "lat": 44.6440, "epci": "COBAN"},
+  {"name": "Audenge", "lon": -1.0130, "lat": 44.6840, "epci": "COBAN"},
+  {"name": "Lanton", "lon": -1.0360, "lat": 44.7040, "epci": "COBAN"},
+  {"name": "Andernos-les-Bains", "lon": -1.1060, "lat": 44.7450, "epci": "COBAN"},
+  {"name": "Arès", "lon": -1.1360, "lat": 44.7660, "epci": "COBAN"},
+  {"name": "Lège-Cap-Ferret", "lon": -1.1470, "lat": 44.7930, "epci": "COBAN"}
+]

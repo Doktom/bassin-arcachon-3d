@@ -1,0 +1,4 @@
+.claude/
+raw/
+__pycache__/
+*.tif
