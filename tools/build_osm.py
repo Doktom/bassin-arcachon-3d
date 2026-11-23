@@ -7,6 +7,20 @@ Données © contributeurs OpenStreetMap, licence ODbL.
 import json, os, sys
 
 RAW = sys.argv[1]
+import numpy as np
+BM = json.load(open("data/bathy.json", encoding="utf-8"))
+GRID = np.fromfile("data/bathy.bin", dtype="<i2").reshape(BM["height"], BM["width"]) / 100.0
+def grid_h(lon, lat):
+    i = int((lon - BM["west"]) / (BM["east"] - BM["west"]) * BM["width"]); j = int((BM["north"] - lat) / (BM["north"] - BM["south"]) * BM["height"])
+    return float(GRID[j, i]) if 0 <= i < BM["width"] and 0 <= j < BM["height"] else None
+def lake_cazaux(lon, lat):
+    """Lac de Cazaux-Sanguinet et arrière-pays au sud de La Teste : hors du Bassin."""
+    return lat < 44.555 and lon > -1.215
+def inland_zone(cls, lon, lat):
+    if lake_cazaux(lon, lat): return True
+    h = grid_h(lon, lat)
+    if h is None: return False
+    return (cls == "banc_sable" and h > 6.5) or (cls in ("marais", "pre_sale", "ile") and h > 12)
 R = lambda v: round(v, 5)
 
 def load(name):
@@ -80,6 +94,8 @@ for e in load("nat"):
     if not c: continue
     polys = polygons(e)
     if not polys: continue
+    big = max((p[0] for p in polys), key=len)
+    if inland_zone(c, sum(q[0] for q in big) / len(big), sum(q[1] for q in big) / len(big)): continue
     props = {"cls": c, "name": t.get("name", ""), "osm": f'{e["type"]}/{e["id"]}'}
     for k in ("description", "wikipedia", "protect_class"):
         if k in t: props[k] = t[k]
@@ -108,6 +124,8 @@ for e in load("seamarks"):
     elif e["type"] == "relation":
         c = centroid(e)
         if c: nav.append({"type": "Feature", "properties": props, "geometry": {"type": "Point", "coordinates": c}})
+nav = [f for f in nav if f["geometry"]["coordinates"] and not lake_cazaux(*f["geometry"]["coordinates"])]
+navlines = [f for f in navlines if not lake_cazaux(*f["geometry"]["coordinates"][0])]
 json.dump({"type": "FeatureCollection", "features": nav}, open("data/seamarks.geojson", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 json.dump({"type": "FeatureCollection", "features": navlines}, open("data/navlines.geojson", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("seamarks", len(nav), "navlines", len(navlines))
@@ -126,14 +144,12 @@ for e in load("ports"):
     for k in ("harbour", "harbour:category", "capacity", "website", "operator", "seamark:harbour:category", "mooring", "fee"):
         if k in t: props[k] = t[k]
     ports.append({"type": "Feature", "properties": props, "geometry": {"type": "Point", "coordinates": c}})
+ports = [f for f in ports if not lake_cazaux(*f["geometry"]["coordinates"])]
 json.dump({"type": "FeatureCollection", "features": ports}, open("data/ports.geojson", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("ports", len(ports))
 
 # ---------- lieux ----------
 # On ne garde que les lieux « du bord de l'eau » : distance à l'eau estimée sur la grille bathymétrique.
-import numpy as np
-BM = json.load(open("data/bathy.json", encoding="utf-8"))
-GRID = np.fromfile("data/bathy.bin", dtype="<i2").reshape(BM["height"], BM["width"]) / 100.0
 def near_water(lon, lat, radius_m=700):
     if not (BM["west"] < lon < BM["east"] and BM["south"] < lat < BM["north"]): return False
     fx = (lon - BM["west"]) / (BM["east"] - BM["west"]) * (BM["width"] - 1)
@@ -160,6 +176,7 @@ for e in load("places"):
         if not c: continue
         if kind in ("hamlet", "locality", "suburb", "quarter") and not near_water(c[0], c[1]): continue
         if kind == "bay" and "Gascogne" in t["name"]: continue
+        if lake_cazaux(*c): continue
     import re
     if re.match(r"^(Chenal|Rade|Passe|Fosse|Canelette)", t["name"]): kind = "channel"
     elif re.match(r"^(Estey|Craste|Caste)", t["name"]): kind = "estey"

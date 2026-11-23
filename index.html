@@ -2,10 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Bassin d'Arcachon 3D</title>
-<meta name="description" content="Carte 3D interactive du Bassin d'Arcachon : bathymétrie, crassats, prés salés, ports, communes et balisage de navigation.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2215%22 fill=%22%230b1726%22/%3E%3Cpath d=%22M6 20c4-6 8 2 12-3s6-4 8-2%22 stroke=%22%235fc4e0%22 stroke-width=%223%22 fill=%22none%22/%3E%3C/svg%3E">
+<meta name="description" content="Carte 3D interactive du Bassin d'Arcachon : bathymétrie, marée, crassats, prés salés, ports, communes et balisage de navigation.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2215%22 fill=%22%23123a5a%22/%3E%3Cpath d=%22M6 19c4-5 8 2 12-3s6-3 8-1%22 stroke=%22%2378d0e0%22 stroke-width=%223%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,600;1,8..60,400;1,8..60,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 { "imports": {
@@ -18,88 +21,131 @@
 <div id="scene"></div>
 <div id="labels"></div>
 
+<!-- ===== panneau principal ===== -->
 <aside id="panel">
-  <header>
-    <h1>Bassin d'Arcachon</h1>
-    <p class="sub">Carte 3D — bathymétrie, estran &amp; navigation</p>
-    <button id="toggle-panel" aria-label="Replier le panneau">–</button>
+  <header class="brand">
+    <div>
+      <h1>Bassin d'Arcachon</h1>
+      <p>Carte 3D de l'eau, de l'estran et du balisage</p>
+    </div>
+    <button id="toggle-panel" class="icon-btn" aria-label="Replier le panneau" aria-expanded="true">
+      <svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>
+    </button>
   </header>
 
+  <div class="search">
+    <svg viewBox="0 0 24 24" class="search-ico"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+    <input id="search" type="search" placeholder="Chercher un crassat, un chenal, un port…" autocomplete="off" spellcheck="false">
+    <ul id="results" role="listbox" hidden></ul>
+  </div>
+
   <div class="panel-body">
-    <section>
-      <h2>Marée <span class="hint">hauteur d'eau / zéro hydro.</span></h2>
-      <div class="row tide-row">
-        <input type="range" id="tide" min="0" max="5" step="0.05" value="2.4">
-        <output id="tide-out">2,40 m</output>
+    <!-- marée -->
+    <section class="tide">
+      <div class="tide-head">
+        <div>
+          <span class="eyebrow">Hauteur d'eau</span>
+          <div class="tide-value"><output id="tide-out">2,45</output><small> m</small></div>
+        </div>
+        <div class="tide-phase">
+          <span id="tide-phase">Mi-marée</span>
+          <button id="tide-play" class="play" aria-label="Animer la marée"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        </div>
       </div>
-      <div class="chips">
-        <button data-tide="0.55">BM vives-eaux</button>
-        <button data-tide="1.55">BM mortes-eaux</button>
-        <button data-tide="3.3">PM mortes-eaux</button>
-        <button data-tide="4.3">PM vives-eaux</button>
+      <svg id="tide-curve" viewBox="0 0 280 78" preserveAspectRatio="none" aria-label="Courbe de marée : cliquer ou glisser pour choisir l'heure">
+        <defs>
+          <linearGradient id="tg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4fb3d9" stop-opacity=".45"/><stop offset="1" stop-color="#4fb3d9" stop-opacity="0"/></linearGradient>
+        </defs>
+        <path id="tc-fill" fill="url(#tg)"/>
+        <path id="tc-line" fill="none" stroke="#2a8cbf" stroke-width="2"/>
+        <line id="tc-level" x1="0" x2="280" stroke="#2a8cbf" stroke-dasharray="3 3" stroke-opacity=".5"/>
+        <line id="tc-now" y1="4" y2="66" stroke="#123a5a" stroke-opacity=".35"/>
+        <circle id="tc-dot" r="5.5" fill="#fff" stroke="#123a5a" stroke-width="2.5"/>
+        <g class="tc-ticks" font-size="9" text-anchor="middle">
+          <text x="6" y="76">BM</text><text x="73" y="76">−3 h</text><text x="140" y="76">PM</text><text x="207" y="76">+3 h</text><text x="274" y="76">BM</text>
+        </g>
+      </svg>
+      <input type="range" id="tide" min="0" max="5" step="0.05" value="2.45" aria-label="Hauteur d'eau au-dessus du zéro hydrographique">
+      <div class="seg small" id="coef" role="radiogroup" aria-label="Coefficient">
+        <button data-coef="45">Mortes-eaux<small>coef 45</small></button>
+        <button data-coef="70">Moyenne<small>coef 70</small></button>
+        <button data-coef="95" class="on">Vives-eaux<small>coef 95</small></button>
+        <button data-coef="115">Grande marée<small>coef 115</small></button>
       </div>
-      <div class="row">
-        <button id="tide-anim" class="wide">▶ Animer un cycle de marée</button>
-      </div>
-      <p class="tiny" id="tide-phase">&nbsp;</p>
+      <p class="note">Hauteurs au-dessus du zéro hydrographique, marnages indicatifs d'Arcachon-Eyrac.</p>
     </section>
 
+    <!-- fond -->
     <section>
-      <h2>Fond &amp; relief</h2>
-      <div class="seg" id="basemap">
-        <button data-v="bathy" class="on">Bathymétrie</button>
-        <button data-v="ortho">Photo aérienne IGN</button>
+      <h2>Fond de carte</h2>
+      <div class="seg" id="style">
+        <button data-style="0" class="on">Naturel</button>
+        <button data-style="1">Carte marine</button>
+        <button data-style="2">Photo IGN</button>
       </div>
-      <label class="row">Exagération verticale
-        <input type="range" id="exag" min="1" max="40" step="1" value="14"><output id="exag-out">×14</output></label>
-      <label class="chk"><input type="checkbox" id="l-iso" checked> Isobathes (0, 2, 5, 10, 20 m)</label>
-      <label class="chk"><input type="checkbox" id="l-night"> Mode nuit (feux)</label>
     </section>
 
+    <!-- calques -->
     <section>
       <h2>Estran &amp; milieux</h2>
-      <label class="chk"><input type="checkbox" id="l-crassat" checked><i class="sw sw-crassat"></i> Crassats (bancs intertidaux)</label>
-      <label class="chk"><input type="checkbox" id="l-sable" checked><i class="sw sw-sable"></i> Bancs de sable &amp; plages</label>
-      <label class="chk"><input type="checkbox" id="l-presale" checked><i class="sw sw-presale"></i> Prés salés</label>
-      <label class="chk"><input type="checkbox" id="l-marais" checked><i class="sw sw-marais"></i> Marais &amp; roselières</label>
-      <label class="chk"><input type="checkbox" id="l-names" checked> Noms des crassats et lieux-dits</label>
-    </section>
-
-    <section>
-      <h2>Repères</h2>
-      <label class="chk"><input type="checkbox" id="l-communes" checked><i class="sw sw-commune"></i> Communes du Bassin</label>
-      <label class="chk"><input type="checkbox" id="l-ports" checked><i class="sw sw-port"></i> Ports &amp; cales</label>
-    </section>
-
-    <section class="nav-section">
-      <h2>Calque navigation</h2>
-      <label class="chk"><input type="checkbox" id="l-nav" checked> Balisage (bouées, balises, feux)</label>
-      <label class="chk"><input type="checkbox" id="l-navlines" checked><i class="sw sw-navline"></i> Chenaux, alignements &amp; zones</label>
-      <label class="chk"><input type="checkbox" id="l-navnames"> Noms des marques</label>
-      <div class="legend">
-        <span><i class="mk mk-port"></i>Bâbord</span>
-        <span><i class="mk mk-stbd"></i>Tribord</span>
-        <span><i class="mk mk-card"></i>Cardinale</span>
-        <span><i class="mk mk-spec"></i>Spéciale</span>
-        <span><i class="mk mk-safe"></i>Eaux saines</span>
-        <span><i class="mk mk-light"></i>Feu</span>
+      <div class="tiles">
+        <button class="tile on" data-layer="crassat"><i class="sw sw-crassat"></i>Crassats</button>
+        <button class="tile on" data-layer="sable"><i class="sw sw-sable"></i>Bancs &amp; plages</button>
+        <button class="tile on" data-layer="presale"><i class="sw sw-presale"></i>Prés salés</button>
+        <button class="tile on" data-layer="marais"><i class="sw sw-marais"></i>Marais</button>
+        <button class="tile on" data-layer="names"><i class="sw sw-names">Aa</i>Toponymes</button>
+        <button class="tile on" data-layer="iso"><i class="sw sw-iso"></i>Isobathes</button>
       </div>
-      <p class="tiny">Système IALA région A. Ne pas utiliser pour la navigation : se référer aux cartes SHOM 7428 / 7429 et aux avis urbi.</p>
+      <h2>Navigation</h2>
+      <div class="tiles">
+        <button class="tile on" data-layer="nav"><i class="sw sw-nav"></i>Balisage</button>
+        <button class="tile on" data-layer="navlines"><i class="sw sw-navline"></i>Zones portuaires</button>
+        <button class="tile on" data-layer="ports"><i class="sw sw-port">⚓</i>Ports &amp; cales</button>
+        <button class="tile" data-layer="navnames"><i class="sw sw-names">12</i>Noms des marques</button>
+      </div>
     </section>
 
-    <footer>
-      <p class="tiny">Bathymétrie © <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">EMODnet Bathymetry</a> ·
-      Milieux, ports, balisage © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">contributeurs OpenStreetMap</a> (ODbL) ·
-      Orthophoto © <a href="https://geoservices.ign.fr/" target="_blank" rel="noopener">IGN Géoplateforme</a></p>
-    </footer>
+    <!-- vues -->
+    <section>
+      <h2>Aller à</h2>
+      <div class="views" id="views"></div>
+    </section>
+
+    <details class="settings">
+      <summary>Réglages &amp; sources</summary>
+      <label class="row">Exagération du relief <input type="range" id="exag" min="1" max="40" step="1" value="14"><output id="exag-out">×14</output></label>
+      <p class="note">Ne pas utiliser pour la navigation : les bancs du Bassin bougent en permanence. Se référer aux cartes SHOM 7428 / 7429.</p>
+      <p class="note">Bathymétrie © <a href="https://emodnet.ec.europa.eu/en/bathymetry" target="_blank" rel="noopener">EMODnet Bathymetry</a> ·
+        Milieux, ports, balisage, toponymes © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">contributeurs OpenStreetMap</a> (ODbL) ·
+        Orthophoto © <a href="https://geoservices.ign.fr/" target="_blank" rel="noopener">IGN</a> ·
+        <a href="https://github.com/Doktom/bassin-arcachon-3d" target="_blank" rel="noopener">code source</a></p>
+    </details>
   </div>
 </aside>
 
-<div id="readout"><span id="ro-pos">Survolez la carte</span><span id="ro-depth"></span><span id="ro-zone"></span></div>
+<!-- ===== commandes de vue ===== -->
+<div id="nav-ctrls">
+  <button id="compass" class="ctrl" title="Nord en haut" aria-label="Nord en haut">
+    <svg viewBox="0 0 40 40"><g id="needle"><path d="M20 5 L25 20 L15 20 Z" fill="#d8434a"/><path d="M20 35 L15 20 L25 20 Z" fill="#9fb0bf"/></g><circle cx="20" cy="20" r="2" fill="#fff"/></svg>
+  </button>
+  <button id="zoom-in" class="ctrl" title="Zoom avant" aria-label="Zoom avant"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>
+  <button id="zoom-out" class="ctrl" title="Zoom arrière" aria-label="Zoom arrière"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+  <button id="pitch" class="ctrl txt" title="Vue 2D / 3D">2D</button>
+  <button id="home" class="ctrl" title="Vue d'ensemble" aria-label="Vue d'ensemble"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6M6 10v9h12v-9"/></svg></button>
+  <button id="night" class="ctrl" title="Mode nuit (feux)" aria-label="Mode nuit"><svg viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg></button>
+</div>
+
+<!-- ===== légende + échelle ===== -->
+<div id="legend">
+  <div id="depth-legend"></div>
+  <div id="scale"><div class="bar"></div><span></span></div>
+</div>
+
+<div id="readout"><span id="ro-pos">Survolez la carte</span><span id="ro-depth"></span></div>
+<div id="tooltip" hidden></div>
 <div id="popup" hidden><button class="close" aria-label="Fermer">×</button><div class="content"></div></div>
-<div id="compass" title="Remettre le nord en haut"><svg viewBox="0 0 40 40"><path d="M20 4 L26 22 L20 19 L14 22 Z" fill="#e2564b"/><path d="M20 36 L14 18 L20 21 L26 18 Z" fill="#cfd8e3"/><text x="20" y="3.5" text-anchor="middle" font-size="7" fill="currentColor">N</text></svg></div>
-<div id="help">Clic gauche : déplacer · Clic droit / Ctrl : orbiter · Molette : zoom · Clic : infos</div>
-<div id="loading">Chargement du Bassin…</div>
+<div id="hint">Glisser pour déplacer · <b>clic droit</b> ou <b>Ctrl</b> pour pivoter · molette pour zoomer · clic pour les infos</div>
+<div id="loading"><div class="spinner"></div>Chargement du Bassin…</div>
 
 <script type="module" src="js/app.js"></script>
 </body>

@@ -6,14 +6,15 @@ Carte 3D du Bassin d'Arcachon centrée sur l'eau : bathymétrie réelle, crassat
 
 ## Fonctionnalités
 
-- **Relief bathymétrique 3D** (EMODnet, ~115 m ré-échantillonné) avec exagération verticale réglable : chenaux (Teychan, Piquey, Courbey…), passes, crassats, Banc d'Arguin, Dune du Pilat.
-- **Curseur de marée** (hauteur d'eau au-dessus du zéro hydrographique) avec préréglages PM/BM vives-eaux et mortes-eaux, et animation d'un cycle complet : les crassats découvrent et se recouvrent en temps réel.
-- **Isobathes** 0 / 2 / 5 / 10 / 20 m calculées dans le shader.
-- **Milieux** (OpenStreetMap) : ~180 crassats nommés, prés salés, marais et roselières (delta de l'Eyre, Île aux Oiseaux…), bancs de sable et plages.
-- **Repères** : les 10 communes du Bassin (COBAS / COBAN), ports de plaisance et ostréicoles, cales.
-- **Calque navigation** : ~500 marques (bouées et balises latérales, cardinales, spéciales…) modélisées en 3D avec couleurs, formes et voyants ; feux avec leur rythme réel (`Fl(2) G 6s`…) ; mode nuit ; zones portuaires / réglementées drapées.
-- **Lecture au curseur** : position en degrés-minutes, sonde, hauteur d'eau à la marée choisie, nom du crassat survolé. Clic = fiche détaillée.
-- **Fond alternatif** : orthophotographie IGN drapée sur le relief.
+- **Diorama 3D** du Bassin : relief bathymétrique réel (EMODnet), socle en coupe avec la tranche d'eau, reflets animés à la surface.
+- **Marée intuitive** : courbe de marée cliquable (BM → PM → BM), choix du coefficient (mortes-eaux 45 → grande marée 115), animation ; les crassats découvrent et se recouvrent en direct. Réglage fin de la hauteur d'eau au centimètre.
+- **3 fonds de carte** : *Naturel* (couleurs de profondeur à la marée choisie), *Carte marine* (conventions SHOM : découvrant vert, sondes 0–2 / 2–5 / 5–10 / >10 m, laisse de marée actuelle), *Photo IGN* drapée sur le relief.
+- **Recherche** de n'importe quel crassat, chenal, estey, port, commune ou marque, avec vol animé et mise en évidence de la zone.
+- **Vues prédéfinies** : Passes & Arguin, Pointe du Cap Ferret, Île aux Oiseaux, Rade d'Eyrac, ports ostréicoles, delta de l'Eyre, Arès–Andernos.
+- **Milieux** (OpenStreetMap) : ~180 crassats nommés, prés salés, marais et roselières, bancs de sable et plages ; toponymie cartographique (hydronymes en italique, communes en capitales).
+- **Calque navigation** : ~330 marques (bouées et balises latérales, cardinales, spéciales…) modélisées en 3D avec couleurs, formes et voyants ; feux avec leur rythme réel (`Fl(2) G 6s`…), mode nuit ; zones portuaires et réglementées.
+- **Lecture au curseur** : position en degrés-minutes, sonde, hauteur d'eau ; infobulle sur les marques et les crassats ; fiche détaillée au clic ; échelle graphique en km et milles.
+- Interface responsive (panneau en tiroir sur mobile).
 
 > ⚠️ Carte de découverte, **ne pas utiliser pour la navigation**. Les bancs du Bassin bougent en permanence : référez-vous aux cartes SHOM (7428, 7429) et aux avis aux navigateurs.
 
@@ -49,4 +50,4 @@ python tools/build_osm.py raw
 
 ## Technique
 
-[three.js](https://threejs.org/) (r160) : maillage de 864 × 672 sommets, coloration bathymétrique, marée, isobathes et drapage des couches vectorielles (rendues dans des canvas 4096²) entièrement dans un shader ; étiquettes HTML avec gestion des collisions ; picking par lancer de rayon sur le champ de hauteurs.
+[three.js](https://threejs.org/) (r160) : maillage de 864 × 672 sommets calés au centre des pixels du MNT, coloration bathymétrique, marée, isobathes et drapage des couches vectorielles (rendues dans des canvas 4096²) entièrement dans un shader ; étiquettes HTML avec gestion des collisions ; picking par lancer de rayon sur le champ de hauteurs.
