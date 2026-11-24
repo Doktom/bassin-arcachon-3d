@@ -8,7 +8,7 @@ import { initTuto } from './tuto.js';
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
-const DATA_V = '5'; // invalide le cache navigateur à chaque mise à jour des données
+const DATA_V = '6'; // invalide le cache navigateur à chaque mise à jour des données
 const getJSON = (u) => fetch(`${u}?v=${DATA_V}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const getBin = (u) => fetch(`${u}?v=${DATA_V}`).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null);
 const getImg = (u) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = `${u}?v=${DATA_V}`; });
