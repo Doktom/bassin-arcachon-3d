@@ -6,15 +6,17 @@ Carte 3D du Bassin d'Arcachon centrée sur l'eau : bathymétrie réelle, crassat
 
 ## Fonctionnalités
 
-- **Diorama 3D** du Bassin : relief bathymétrique réel (EMODnet), socle en coupe avec la tranche d'eau, reflets animés à la surface.
-- **Marée intuitive** : courbe de marée cliquable (BM → PM → BM), choix du coefficient (mortes-eaux 45 → grande marée 115), animation ; les crassats découvrent et se recouvrent en direct. Réglage fin de la hauteur d'eau au centimètre.
-- **3 fonds de carte** : *Naturel* (couleurs de profondeur à la marée choisie), *Carte marine* (conventions SHOM : découvrant vert, sondes 0–2 / 2–5 / 5–10 / >10 m, laisse de marée actuelle), *Photo IGN* drapée sur le relief.
-- **Recherche** de n'importe quel crassat, chenal, estey, port, commune ou marque, avec vol animé et mise en évidence de la zone.
-- **Vues prédéfinies** : Passes & Arguin, Pointe du Cap Ferret, Île aux Oiseaux, Rade d'Eyrac, ports ostréicoles, delta de l'Eyre, Arès–Andernos.
-- **Milieux** (OpenStreetMap) : ~180 crassats nommés, prés salés, marais et roselières, bancs de sable et plages ; toponymie cartographique (hydronymes en italique, communes en capitales).
-- **Calque navigation** : ~330 marques (bouées et balises latérales, cardinales, spéciales…) modélisées en 3D avec couleurs, formes et voyants ; feux avec leur rythme réel (`Fl(2) G 6s`…), mode nuit ; zones portuaires et réglementées.
-- **Lecture au curseur** : position en degrés-minutes, sonde, hauteur d'eau ; infobulle sur les marques et les crassats ; fiche détaillée au clic ; échelle graphique en km et milles.
-- Interface responsive (panneau en tiroir sur mobile).
+- **Diorama 3D** du Bassin : relief bathymétrique réel (EMODnet), socle en coupe avec la tranche d'eau, reflets animés, nuages low-poly.
+- **Environnement terrestre low-poly** : relief à facettes, **forêt de pins maritimes** (≈ 32 000 pins placés d'après les forêts OpenStreetMap, port en parasol caractéristique des Landes), zones bâties sobres, lac de Cazaux.
+- **Dune du Pilat** en haute résolution (≈ 12 m, IGN RGE ALTI) : altitude au clic.
+- **Cabanes tchanquées** n°51 (volets rouges) et n°53 (volets blancs) sur pilotis, et cabanes ostréicoles de l'Île aux Oiseaux, à leurs positions OSM.
+- **Écran sobre** : titre et recherche, barre de marée, commandes de vue ; tout le reste dans le panneau « Calques ».
+- **Tutoriel** en 5 étapes au premier lancement, passable à tout moment, relançable avec « ? ».
+- **Marée** : courbe cliquable (BM → PM → BM), coefficient 45 → 115, animation ; les crassats découvrent en direct.
+- **3 fonds de carte** : *Naturel*, *Carte marine* (conventions SHOM), *Photo IGN* drapée.
+- **Recherche** (crassats, chenaux, esteys, ports, communes, marques, cabanes) et **lieux à découvrir** avec vol animé.
+- **Milieux** : ~180 crassats nommés, prés salés, marais, bancs de sable ; toponymie cartographique.
+- **Calque navigation** : ~330 marques IALA A en 3D (couleurs dans l'ordre OSM, voyants), feux au rythme réel, mode nuit, zones portuaires.
 
 > ⚠️ Carte de découverte, **ne pas utiliser pour la navigation**. Les bancs du Bassin bougent en permanence : référez-vous aux cartes SHOM (7428, 7429) et aux avis aux navigateurs.
 
@@ -24,6 +26,8 @@ Carte 3D du Bassin d'Arcachon centrée sur l'eau : bathymétrie réelle, crassat
 |---|---|---|
 | Bathymétrie / relief | [EMODnet Bathymetry](https://emodnet.ec.europa.eu/en/bathymetry) DTM (moyenne), réf. ≈ LAT / zéro hydrographique | CC-BY 4.0 |
 | Crassats, marais, plages, ports, balisage, toponymes | © contributeurs [OpenStreetMap](https://www.openstreetmap.org/copyright) | ODbL |
+| Dune du Pilat | [IGN](https://geoservices.ign.fr/) RGE ALTI via l'API altimétrie de la Géoplateforme (NGF-IGN69, +2,1 m ≈ zéro hydrographique) | Licence Ouverte Etalab 2.0 |
+| Forêts, bâti, lacs, cabanes | © contributeurs OpenStreetMap | ODbL |
 | Orthophoto | [IGN Géoplateforme](https://geoservices.ign.fr/) (WMTS, chargée à la demande) | Licence Ouverte Etalab 2.0 |
 
 Les marnages proposés sont indicatifs (Arcachon-Eyrac).
@@ -46,8 +50,13 @@ python tools/build_bathy.py emod.tif
 # 2. Extraits OpenStreetMap (Overpass) dans ./raw puis conversion
 python tools/fetch_osm.py          # à lancer depuis ./raw
 python tools/build_osm.py raw
+python tools/build_landcover.py raw  # masque forêt / bâti / sable
+python tools/fetch_pilat.py          # relief fin de la Dune du Pilat (IGN)
 ```
 
 ## Technique
+
+Le relief terrestre EMODnet est un modèle de surface (il inclut la canopée des pins) : il est simplifié en triangulation low-poly irrégulière (~290 m), tandis que l'eau et l'estran gardent la bathymétrie d'origine intacte.
+
 
 [three.js](https://threejs.org/) (r160) : maillage de 864 × 672 sommets calés au centre des pixels du MNT, coloration bathymétrique, marée, isobathes et drapage des couches vectorielles (rendues dans des canvas 4096²) entièrement dans un shader ; étiquettes HTML avec gestion des collisions ; picking par lancer de rayon sur le champ de hauteurs.

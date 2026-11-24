@@ -1,8 +1,10 @@
-"""Télécharge les extraits OpenStreetMap (Overpass API) dans le dossier courant. Usage : python fetch_osm.py [nat seamarks ports places]"""
+"""Télécharge les extraits OpenStreetMap (Overpass API) dans le dossier courant. Usage : python fetch_osm.py [nat seamarks ports places landcover cabanes lakes]"""
 import json, sys, time, urllib.request, urllib.parse
 EPS=["https://overpass-api.de/api/interpreter","https://overpass.private.coffee/api/interpreter","https://overpass.kumi.systems/api/interpreter"]
 Q={
-"nat":'[out:json][timeout:180];(nwr["natural"~"^(sand|shoal|beach|wetland|mud|reef)$"](44.50,-1.36,44.80,-0.95);nwr["wetland"](44.50,-1.36,44.80,-0.95);nwr["place"~"^(island|islet)$"](44.50,-1.36,44.80,-0.95););out geom;',
+"lakes":'[out:json][timeout:120];(way["natural"="water"](44.45,-1.40,44.80,-0.95);relation["natural"="water"](44.45,-1.40,44.80,-0.95););out geom;',
+"landcover":'[out:json][timeout:240];(way["landuse"~"^(forest|residential|commercial|industrial|retail|farmland|meadow|grass|military)$"](44.45,-1.40,44.80,-0.95);relation["landuse"~"^(forest|residential|commercial|industrial|retail|farmland|meadow)$"](44.45,-1.40,44.80,-0.95);way["natural"~"^(wood|sand|heath|scrub|dune|grassland)$"](44.45,-1.40,44.80,-0.95);relation["natural"~"^(wood|sand|heath|scrub|grassland)$"](44.45,-1.40,44.80,-0.95););out geom;',
+"cabanes":'[out:json][timeout:90];(nwr["name"~"tchanqu",i](44.60,-1.30,44.80,-1.00);nwr["building"](44.695,-1.185,44.715,-1.135);nwr["man_made"](44.695,-1.185,44.715,-1.135););out geom;',
 "seamarks":'[out:json][timeout:90];nwr["seamark:type"](44.45,-1.45,44.80,-0.95);out geom;',
 "ports":'[out:json][timeout:90];(nwr["leisure"~"^(marina|slipway)$"](44.50,-1.36,44.80,-0.95);nwr["harbour"](44.50,-1.36,44.80,-0.95);nwr["landuse"="harbour"](44.50,-1.36,44.80,-0.95);nwr["man_made"~"^(pier|breakwater|lighthouse)$"](44.50,-1.36,44.80,-0.95););out geom;',
 "places":'[out:json][timeout:90];(node["place"~"^(town|village|suburb|hamlet|locality|sea|bay)$"](44.45,-1.45,44.82,-0.92);nwr["natural"~"^(strait|bay|cape|peninsula|dune)$"](44.45,-1.45,44.80,-0.95);nwr["waterway"]["name"](44.50,-1.36,44.80,-0.95););out geom;',

@@ -1,0 +1,13 @@
+{
+ "west": -1.224,
+ "east": -1.2,
+ "south": 44.57,
+ "north": 44.604,
+ "width": 161,
+ "height": 316,
+ "unit": "cm",
+ "offset_ngf_to_grid_m": 2.1,
+ "max_m": 105.03999328613281,
+ "source": "IGN Géoplateforme — RGE ALTI (API altimétrie)",
+ "note": "NGF-IGN69 + 2,1 m ≈ zéro hydrographique d'Arcachon (approx.)"
+}

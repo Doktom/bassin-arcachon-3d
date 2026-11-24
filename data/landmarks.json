@@ -1,0 +1,242 @@
+[
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18442,
+"lat": 44.69593,
+"angle": 2.725,
+"osm": "way/179277620"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18444,
+"lat": 44.69578,
+"angle": 2.769,
+"osm": "way/179277621"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18445,
+"lat": 44.69584,
+"angle": -0.345,
+"osm": "way/179277622"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18474,
+"lat": 44.69921,
+"angle": 0.317,
+"osm": "way/179277623"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18467,
+"lat": 44.69893,
+"angle": 2.973,
+"osm": "way/179277624"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18484,
+"lat": 44.69896,
+"angle": -0.161,
+"osm": "way/179277625"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18502,
+"lat": 44.69917,
+"angle": -2.988,
+"osm": "way/179277626"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18137,
+"lat": 44.69516,
+"angle": -3.0,
+"osm": "way/179277629"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18135,
+"lat": 44.69508,
+"angle": -1.326,
+"osm": "way/179277630"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.1813,
+"lat": 44.69501,
+"angle": -2.874,
+"osm": "way/179277631"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.1843,
+"lat": 44.6957,
+"angle": 2.745,
+"osm": "way/179277632"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18408,
+"lat": 44.69569,
+"angle": 2.692,
+"osm": "way/179277633"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18142,
+"lat": 44.69499,
+"angle": 1.75,
+"osm": "way/179277634"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17643,
+"lat": 44.7045,
+"angle": 0.101,
+"osm": "way/179277635"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.1764,
+"lat": 44.70443,
+"angle": -0.025,
+"osm": "way/179277636"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17792,
+"lat": 44.69754,
+"angle": -2.57,
+"osm": "way/179277640"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17544,
+"lat": 44.69795,
+"angle": 0.934,
+"osm": "way/179277641"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17604,
+"lat": 44.70449,
+"angle": 0.045,
+"osm": "way/179277642"
+},
+{
+"kind": "tchanquee",
+"name": "Cabane Tchanquée n°51 (volets rouges)",
+"lon": -1.16621,
+"lat": 44.69451,
+"angle": 0.286,
+"osm": "way/179277643"
+},
+{
+"kind": "tchanquee",
+"name": "Cabane Tchanquée n°53 (volets blancs)",
+"lon": -1.16683,
+"lat": 44.69437,
+"angle": -2.838,
+"osm": "way/179277644"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17629,
+"lat": 44.70451,
+"angle": 0.118,
+"osm": "way/179277645"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17603,
+"lat": 44.70444,
+"angle": 0.049,
+"osm": "way/179277646"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17616,
+"lat": 44.70447,
+"angle": -3.105,
+"osm": "way/179277647"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18438,
+"lat": 44.69601,
+"angle": 1.064,
+"osm": "way/179277651"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17659,
+"lat": 44.70448,
+"angle": -3.071,
+"osm": "way/179277652"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17656,
+"lat": 44.7044,
+"angle": 0.143,
+"osm": "way/179277653"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17627,
+"lat": 44.70445,
+"angle": 0.067,
+"osm": "way/179277654"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.17721,
+"lat": 44.70436,
+"angle": 0.226,
+"osm": "way/548130731"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18176,
+"lat": 44.70349,
+"angle": -2.791,
+"osm": "way/953080098"
+},
+{
+"kind": "cabane",
+"name": "",
+"lon": -1.18504,
+"lat": 44.69899,
+"angle": 0.106,
+"osm": "way/1426283021"
+}
+]

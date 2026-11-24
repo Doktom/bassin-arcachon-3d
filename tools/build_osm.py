@@ -184,3 +184,39 @@ for e in load("places"):
                    "geometry": {"type": "Point", "coordinates": c}})
 json.dump({"type": "FeatureCollection", "features": places}, open("data/places.geojson", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 print("places", len(places))
+
+# ---------- cabanes (tchanquées + cabanes de l'Île aux Oiseaux) ----------
+marks_out = []
+for e in load("cabanes"):
+    t = e.get("tags", {})
+    if e["type"] != "way" or "geometry" not in e: continue
+    g = e["geometry"]
+    lon = sum(p["lon"] for p in g) / len(g); lat = sum(p["lat"] for p in g) / len(g)
+    if not (44.690 < lat < 44.710 and -1.190 < lon < -1.160): continue  # Île aux Oiseaux et abords
+    name = t.get("name", "")
+    kind = "tchanquee" if "tchanqu" in name.lower() else "cabane"
+    # orientation du bâtiment : plus long côté
+    import math
+    best, ang = 0, 0
+    for a, b in zip(g, g[1:]):
+        dx = (b["lon"] - a["lon"]) * math.cos(math.radians(lat)); dy = b["lat"] - a["lat"]
+        d = math.hypot(dx, dy)
+        if d > best: best, ang = d, math.atan2(dy, dx)
+    marks_out.append({"kind": kind, "name": name, "lon": R(lon), "lat": R(lat), "angle": round(ang, 3), "osm": f'way/{e["id"]}'})
+json.dump(marks_out, open("data/landmarks.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+print("cabanes", len(marks_out), sum(m["kind"] == "tchanquee" for m in marks_out))
+
+# ---------- plans d'eau intérieurs (lac de Cazaux, réservoirs, étangs) ----------
+lakes = []
+for e in load("lakes"):
+    t = e.get("tags", {})
+    polys = polygons(e)
+    if not polys: continue
+    pts = [q for p in polys for q in p[0]]
+    hs = [grid_h(*q) for q in pts[:: max(1, len(pts) // 60)]]
+    hs = [h for h in hs if h is not None]
+    if not hs or sum(h > 4 for h in hs) < len(hs) * 0.6: continue  # le Bassin lui-même est déjà de la mer
+    lakes.append({"type": "Feature", "properties": {"name": t.get("name", ""), "water": t.get("water", ""), "osm": f'{e["type"]}/{e["id"]}'},
+                  "geometry": {"type": "MultiPolygon", "coordinates": polys}})
+json.dump({"type": "FeatureCollection", "features": lakes}, open("data/lakes.geojson", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+print("lakes", len(lakes))
